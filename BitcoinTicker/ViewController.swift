@@ -26,6 +26,9 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         super.viewDidLoad()
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
+        
+        finalURL = baseURL + currencyArray[0]
+        getBtcPrice(url:finalURL)
     }
 
     
@@ -64,7 +67,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
                     print("Sucess! Got the btc coin info")
                     let btcPriceJSON : JSON = JSON(response.result.value!)
                     print(btcPriceJSON["last"])
-                    //self.updatePriceLabel(json:btcPriceJSON)
+                    self.updatePriceLabel(json:btcPriceJSON)
                 } else {
                     print("Error: \(String(describing: response.result.error))")
                     self.bitcoinPriceLabel.text = "Connection Issues"
@@ -76,18 +79,12 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     //MARK: - JSON Parsing
     /***************************************************************/
     
-//    func updatePriceLabel(json : JSON) {
-//
-//        if let tempResult = json["main"]["temp"].double {
-//
-//        weatherData.temperature = Int(round(tempResult!) - 273.15)
-//        weatherData.city = json["name"].stringValue
-//        weatherData.condition = json["weather"][0]["id"].intValue
-//        weatherData.weatherIconName =    weatherData.updateWeatherIcon(condition: weatherData.condition)
-//        }
-//
-//        updateUIWithWeatherData()
-//    }
+    func updatePriceLabel(json : JSON?) {
+
+        if let tempResult = json?["last"] {
+            bitcoinPriceLabel.text = "\(tempResult)"
+        }
+    }
     
 
 
