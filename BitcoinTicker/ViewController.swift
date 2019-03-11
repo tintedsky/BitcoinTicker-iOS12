@@ -14,8 +14,10 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
 
     let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC"
     let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
+    let currencySymbol = ["$", "R$", "$", "¥", "€", "£", "$", "Rp", "₪", "₹", "¥", "$", "kr", "$", "zł", "lei", "₽", "kr", "$", "$", "R"]
     var finalURL = ""
-
+    var finalSymbol = ""
+    
     //Pre-setup IBOutlets
     @IBOutlet weak var bitcoinPriceLabel: UILabel!
     @IBOutlet weak var currencyPicker: UIPickerView!
@@ -27,8 +29,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
         
-        finalURL = baseURL + currencyArray[0]
-        getBtcPrice(url:finalURL)
+        getPriceHelper(row: 0)
     }
 
     
@@ -46,14 +47,14 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        finalURL = baseURL + currencyArray[row]
-        
-        getBtcPrice(url:finalURL)
+        getPriceHelper(row: row)
     }
 
-    
-    
-    
+    func getPriceHelper(row:Int){
+        finalURL = baseURL + currencyArray[row]
+        finalSymbol = currencySymbol[row]
+        getBtcPrice(url:finalURL)
+    }
     
     //MARK: - Networking
     /***************************************************************/
@@ -82,7 +83,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     func updatePriceLabel(json : JSON?) {
 
         if let tempResult = json?["last"] {
-            bitcoinPriceLabel.text = "\(tempResult)"
+            bitcoinPriceLabel.text = "\(finalSymbol)\(tempResult)"
         }
     }
     
